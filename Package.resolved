@@ -1,0 +1,24 @@
+{
+  "originHash" : "6832c0d67ca91df143692b7bc32728a9c000f3334816a7c3b3b85a362cf0be30",
+  "pins" : [
+    {
+      "identity" : "fhirmodels",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/FHIRModels.git",
+      "state" : {
+        "revision" : "b7fcf26b818704f489719f8cdd9e270aaab37823",
+        "version" : "0.7.0"
+      }
+    },
+    {
+      "identity" : "oauth2",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/p2/OAuth2",
+      "state" : {
+        "revision" : "3f6a18beb221636581e66d8d0cbec1a3948b4df3",
+        "version" : "5.3.5"
+      }
+    }
+  ],
+  "version" : 3
+}

@@ -21,7 +21,7 @@ The base type for every FHIR element.
 public protocol FHIRType {
 	
 	/// The parent/owner of the receiver, if any. Used to dereference resources.
-	var _owner: FHIRAbstractBase? { get set }
+	var _owner: (any FHIRAbstractBase)? { get set }
 }
 
 
@@ -40,7 +40,7 @@ public protocol FHIRJSONType: FHIRType {
 	- parameter owner:   Optional, the owning element
 	- parameter context: An in-out parameter for the instantiation context
 	*/
-	init(json: JSONType, owner: FHIRAbstractBase?, context: inout FHIRInstantiationContext)
+	init(json: JSONType, owner: (any FHIRAbstractBase)?, context: inout FHIRInstantiationContext)
 	
 	/**
 	A static/class function that should return the correct (sub)type, depending on information found in `json`.
@@ -52,7 +52,7 @@ public protocol FHIRJSONType: FHIRType {
 	- parameter context: An in-out parameter for the instantiation context
 	- returns:           If possible the appropriate FHIRAbstractBase subclass, instantiated from the given JSON dictionary, Self otherwise
 	*/
-	static func instantiate(from json: JSONType, owner: FHIRAbstractBase?, context: inout FHIRInstantiationContext) -> Self
+	static func instantiate(from json: JSONType, owner: (any FHIRAbstractBase)?, context: inout FHIRInstantiationContext) -> Self
 	
 	/**
 	Populate instance variables - overriding existing ones - with values found in the supplied JSON.
@@ -224,7 +224,7 @@ Cannot implement this as `init?() throws` because it needs to inspect `P.JSONTyp
 - parameter owner:   The FHIRAbstractBase owning the new instance, if appropriate
 - returns:           An instance of the appropriate FHIRPrimitive, or nil
 */
-public func createInstance<P: FHIRJSONType>(type: P.Type, for key: String, in json: FHIRJSON, context: inout FHIRInstantiationContext, owner: FHIRAbstractBase?) -> P? {
+public func createInstance<P: FHIRJSONType>(type: P.Type, for key: String, in json: FHIRJSON, context: inout FHIRInstantiationContext, owner: (any FHIRAbstractBase)?) -> P? {
 	// TODO: should not drop out if **only** an extension is present (as "_key") but no value under "key"
 	guard let exist = json[key] else {
 		if let _ = json["_\(key)"] {
@@ -266,7 +266,7 @@ non-result type position).
 - parameter owner:   The FHIRAbstractBase owning the new instance, if appropriate
 - returns:           An array of the appropriate FHIRPrimitive, or nil
 */
-public func createInstances<P: FHIRJSONType>(of type: P.Type, for key: String, in json: FHIRJSON, context: inout FHIRInstantiationContext, owner: FHIRAbstractBase?) -> [P]? {
+public func createInstances<P: FHIRJSONType>(of type: P.Type, for key: String, in json: FHIRJSON, context: inout FHIRInstantiationContext, owner: (any FHIRAbstractBase)?) -> [P]? {
 	// TODO: should not drop out if **only** an extension is present (as "_key") but no value under "key"
 	guard let exist = json[key] else {
 		if let _ = json["_\(key)"] {

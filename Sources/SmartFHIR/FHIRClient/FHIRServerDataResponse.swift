@@ -28,7 +28,7 @@ extension FHIRServerResponse {
 				if location.hasPrefix(base) {
 					let path = location.replacingOccurrences(of: base, with: "")
 					let components = path.components(separatedBy: "/")
-					guard components.count > 1 && type(of: resource).resourceType == components[0] else {
+					guard components.count > 1 && type(of: resource).resourceType.rawValue == components[0] else {
 						throw FHIRError.responseLocationHeaderResourceTypeMismatch(location, type(of: resource).resourceType.rawValue)
 					}
 					
@@ -50,7 +50,7 @@ extension FHIRServerResponse {
 		// inspect Last-Modified header
 		if let modified = headers["Last-Modified"] {
 			resource.meta = resource.meta ?? Meta()
-			resource.meta!.lastUpdated = Instant.fromHttpDate(modified)
+			resource.meta!.lastUpdated = try? Instant(modified).asPrimitive()
 		}
 		
 		// inspect ETag header
@@ -259,31 +259,13 @@ open class FHIRServerJSONResponse: FHIRServerDataResponse {
 		guard let json = json else {
 			throw FHIRError.responseNoResourceReceived
 		}
-		var context = FHIRInstantiationContext(strict: !(handler?.options.contains(.lenient) ?? false))
-		let resource = T.instantiate(from: json, owner: nil, context: &context)
-		try context.validate()
+		let decoder = JSONDecoder()
+		let data = try JSONSerialization.data(withJSONObject: json, options: [])
+		let resource = try decoder.decode(ofType, from: data)
+		
 		return resource
 	}
 	
-	/**
-	The response's body data is used to update the resource by calling `resource.populateFrom(json: )`. Will throw
-	`FHIRError.responseNoResourceReceived` if body is nil.
-	
-	This method must not be called if the response has a non-nil error.
-	
-	- parameter resource: The resource to apply the response data to
-	*/
-	override open func applyBody(to resource: Resource) throws {
-		guard let json = json else {
-			throw FHIRError.responseNoResourceReceived
-		}
-		if let resourceType = json["resourceType"] as? String, resourceType != type(of: resource).resourceType.rawValue {
-			throw FHIRError.responseResourceTypeMismatch(resourceType, type(of: resource).resourceType.rawValue)
-		}
-		var context = FHIRInstantiationContext(strict: !(handler?.options.contains(.lenient) ?? false))
-		resource.populate(from: json, context: &context)
-		try context.validate()
-	}
 }
 
 

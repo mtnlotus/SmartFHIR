@@ -12,7 +12,7 @@ import Foundation
 /**
 Struct to describe REST request types, with a convenience method to make a request FHIR compliant.
 */
-public enum FHIRRequestMethod: String {
+public enum FHIRRequestMethod: String, Sendable {
 	case GET = "GET"
 	case PUT = "PUT"
 	case POST = "POST"
@@ -173,7 +173,7 @@ public enum FHIRRequestParameterField: String {
 /**
 Options to pass along to request handlers.
 */
-public struct FHIRRequestOption: OptionSet {
+public struct FHIRRequestOption: OptionSet, Sendable {
 	public let rawValue: Int
 	
 	/** Designated initializer. Without this, Swift 3.0 compiler wants to insert a million `public struct` and will still complain... */

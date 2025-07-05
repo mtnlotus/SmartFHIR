@@ -83,7 +83,7 @@ open class FHIRSearch
 		let qry = query.expand(extra)
 		if let type = profileType {
 			if qry.count > 0 {
-				return "\(type.resourceType)?\(qry)"
+				return "\(type.resourceType.rawValue)?\(qry)"
 			}
 			return type.resourceType.rawValue
 		}
@@ -160,8 +160,8 @@ open class FHIRSearch
 					self.nextPageURL = nil
 					if let links = bundle.link {
 						for link in links {
-							if "next" == link.relation {
-								self.nextPageURL = link.url?.url
+							if "next" == link.relation.value?.string {
+								self.nextPageURL = link.url.value?.url
 								break
 							}
 						}
@@ -281,7 +281,7 @@ class FHIRSearchParam: CustomStringConvertible
 
 struct FHIRSearchConstruct
 {
-	static var handlers: [FHIRSearchConstructHandler] = [
+	static let handlers: [FHIRSearchConstructHandler] = [
 		FHIRSearchConstructAndHandler(),
 		FHIRSearchConstructOrHandler(),
 		FHIRSearchConstructModifierHandler(),
@@ -367,7 +367,7 @@ struct FHIRSearchConstruct
 
 // MARK: - Special Handlers
 
-protocol FHIRSearchConstructHandler
+protocol FHIRSearchConstructHandler: Sendable
 {
 	func handles(_ key: String) -> Bool
 	func handle(_ param: FHIRSearchParam, value: Any)

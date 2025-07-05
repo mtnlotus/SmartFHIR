@@ -12,7 +12,7 @@ import Foundation
 /**
 The type of the validation error.
 */
-public enum FHIRValidationErrorType: Int {
+public enum FHIRValidationErrorType: Int, Sendable {
 	
 	/// The key is mandatory but missing.
 	case missingKey
