@@ -19,9 +19,6 @@ class ReferenceTests: XCTestCase {
 	func testContainedReference() {
 		do {
 			let order1 = try loadResourceData(from: "ReferenceContained1") as! MedicationRequest
-//			let data = try JSONSerialization.data(withJSONObject: json)
-//			let order1 = try JSONDecoder().decode(MedicationRequest.self, from: data)
-			
 			XCTAssertEqual("order-ref-contained", order1.id)
 			XCTAssertNotNil(order1.medication)
 //			XCTAssertEqual("Red Pill", order1.medicationReference?.resolved(Medication.self)?.code?.text ?? "missing")
