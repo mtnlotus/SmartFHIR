@@ -25,7 +25,7 @@ enum AuthType: String {
 /**
 Describes the OAuth2 authentication method to be used.
 */
-class Auth {
+public class Auth {
 	
 	/// The authentication type to use.
 	let type: AuthType
@@ -191,6 +191,7 @@ class Auth {
 	- parameter properties: The authorization properties to use
 	- parameter callback:   The callback to call when authorization finishes (or is aborted)
 	*/
+	@MainActor
 	func authorize(with properties: SMARTAuthProperties, callback: @escaping ((_ parameters: OAuth2JSON?, _ error: Error?) -> Void)) {
 		if nil != authCallback {
 			abort()

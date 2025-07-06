@@ -8,7 +8,7 @@
 
 #if os(iOS)
 import OAuth2
-//import UIKit
+import SwiftUI
 
 
 extension Auth {
@@ -24,8 +24,8 @@ extension Auth {
 	- parameter properties: SMART authorization properties to use
 	- parameter callback:   The callback that is called when authorization completes or fails
 	*/
+	@MainActor
 	func authorize(with oauth: OAuth2, properties: SMARTAuthProperties, callback: @escaping ((OAuth2JSON?, OAuth2Error?) -> Void)) {
-		/*
 		authContext = UIApplication.shared.keyWindow?.rootViewController
 		
 		oauth.authConfig.authorizeContext = authContext
@@ -33,14 +33,17 @@ extension Auth {
 		oauth.authConfig.authorizeEmbeddedAutoDismiss = properties.granularity != .patientSelectNative
 		
 		oauth.authorize(params: ["aud": server.aud]) { parameters, error in
-			if nil != error,
-				properties.granularity == .patientSelectNative,   // not auto-dismissing, must do it ourselves
-				let vc = oauth.authConfig.authorizeContext as? UIViewController {
-				vc.dismiss(animated: true)
-			}
+//			if nil != error,
+//				properties.granularity == .patientSelectNative,   // not auto-dismissing, must do it ourselves
+//				let vc = oauth.authConfig.authorizeContext as? UIViewController {
+//				vc.dismiss(animated: true)
+//			}
+			
+			let vc = oauth.authConfig.authorizeContext as? UIViewController
+			vc?.dismiss(animated: true)
+				
 			callback(parameters, error)
 		}
-		*/
 	}
 	
 	/**

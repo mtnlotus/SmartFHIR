@@ -130,6 +130,7 @@ open class Client {
 	- parameter callback: The callback that is called when authorization finishes, with a patient resource (if launch/patient was specified
 	                      or an error
 	*/
+	@MainActor
 	open func authorize(callback: @escaping (_ patient: Patient?, _ error: Error?) -> ()) {
 		server.mustAbortAuthorization = false
 		server.authorize(with: self.authProperties, callback: callback)
