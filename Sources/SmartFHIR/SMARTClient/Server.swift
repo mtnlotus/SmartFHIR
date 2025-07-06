@@ -66,7 +66,14 @@ open class Server: FHIROpenServer, OAuth2RequestPerformer {
 	
 	/// The requested scope.
 	public var scope: String? {
-		get { return auth?.oauth?.scope }
+		auth?.oauth?.scope
+	}
+	
+	/// The scope actually authorized by the endpoint and user.
+	public final var authorizedScope: String? {
+		// TODO: not set in OAuth2 (was added in my clinical-cloud fork)
+//		auth?.oauth?.clientConfig.authorizedScope
+		auth?.oauth?.scope
 	}
 	
 	/// The scope actually authorized by the endpoint and user.
@@ -250,6 +257,7 @@ open class Server: FHIROpenServer, OAuth2RequestPerformer {
 	- parameter callback:   Callback to call when authorization is complete, providing the chosen patient (if the patient scope was
 	                        provided) or an error, if any
 	*/
+	@MainActor
 	open func authorize(with properties: SMARTAuthProperties, callback: @escaping ((_ patient: Patient?, _ error: Error?) -> Void)) {
 		ready() { error in
 			if self.mustAbortAuthorization {
