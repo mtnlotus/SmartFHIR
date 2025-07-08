@@ -94,8 +94,22 @@ public extension Resource {
 	- parameter callback: The callback to execute once done. The callback is NOT guaranteed to be executed on the main thread!
 	*/
 	class func read(_ id: String, server: FHIRServer, options: FHIRRequestOption = [], callback: @escaping FHIRResourceErrorCallback) {
-		let path = "\(resourceType)/\(id)"
+		let path = "\(resourceType.rawValue)/\(id)"
 		readFrom(path, server: server, options: options, callback: callback)
+	}
+	
+	static func readFromAsync(_ path: String, server: FHIRServer, options: FHIRRequestOption = []) async throws -> Resource? {
+		return try await withCheckedThrowingContinuation { continuation in
+			readFrom(path, server: server, options: options) { resource, error in
+				if let resource = resource {
+					continuation.resume(returning: resource)
+				} else if let error = error {
+					continuation.resume(throwing: error)
+				} else {
+					continuation.resume(throwing: URLError(.badServerResponse))
+				}
+			}
+		}
 	}
 	
 	/**

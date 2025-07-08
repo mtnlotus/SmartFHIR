@@ -26,6 +26,7 @@ public enum FHIRError: Error, CustomStringConvertible {
 	/// The resource failed validation
 	case resourceFailedToValidate(FHIRValidationError)
 	case resourceCannotContainItself
+	case resourceReferenceNotResolved(String)
 	
 	case requestCannotPrepareBody
 	case requestNotSent(String)
@@ -71,6 +72,8 @@ public enum FHIRError: Error, CustomStringConvertible {
 			return "\("Failed to validate resource".fhir_localized): \(error)"
 		case .resourceCannotContainItself:
 			return "A resource cannot contain itself".fhir_localized
+		case .resourceReferenceNotResolved(let path):
+			return "\("Failed resolve a reference with the provided path".fhir_localized) «\(path)»"
 		
 		case .requestCannotPrepareBody:
 			return "`FHIRRequestHandler` cannot prepare request body data".fhir_localized
