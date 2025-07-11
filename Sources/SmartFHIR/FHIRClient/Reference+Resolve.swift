@@ -10,11 +10,11 @@ import ModelsR4
 
 extension Reference {
 	
-	public func resolve(using server: Server) async throws -> Resource? {
+	public func resolve<T: Resource>(using server: Server, ofType: T.Type) async throws -> T? {
 		guard let path = self.reference?.value?.string
 		else { throw FHIRError.resourceReferenceNotResolved("nil").asFHIRError }
 		
-		return try await Resource.readFromAsync(path, server: server)
+		return try await ofType.readFromAsync(path, server: server)
 	}
 	
 }

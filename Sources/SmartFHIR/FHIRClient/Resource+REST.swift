@@ -98,10 +98,10 @@ public extension Resource {
 		readFrom(path, server: server, options: options, callback: callback)
 	}
 	
-	static func readFromAsync(_ path: String, server: FHIRServer, options: FHIRRequestOption = []) async throws -> Resource? {
+	static func readFromAsync<T: Resource>(_ path: String, server: FHIRServer, options: FHIRRequestOption = []) async throws -> T? {
 		return try await withCheckedThrowingContinuation { continuation in
 			readFrom(path, server: server, options: options) { resource, error in
-				if let resource = resource {
+				if let resource = resource as? T {
 					continuation.resume(returning: resource)
 				} else if let error = error {
 					continuation.resume(throwing: error)
