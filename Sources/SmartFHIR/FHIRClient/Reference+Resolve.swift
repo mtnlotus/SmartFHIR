@@ -17,4 +17,17 @@ extension Reference {
 		return try await ofType.readFromAsync(path, server: server)
 	}
 	
+	public func relativeReference() -> String? {
+		guard var path = self.reference?.value?.string
+		else { return nil }
+		
+		var parts = path.split(separator: "/")
+		if parts.count == 2 {
+			return path
+		}
+		else if parts.count > 2, let id = parts.popLast(), let resourceType = parts.popLast() {
+			return "\(resourceType)/\(id)"
+		}
+		return nil
+	}
 }
