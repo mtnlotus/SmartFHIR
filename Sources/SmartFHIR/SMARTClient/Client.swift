@@ -136,6 +136,21 @@ open class Client {
 		server.authorize(with: self.authProperties, callback: callback)
 	}
 	
+	@MainActor
+	public func authorize() async throws -> Patient? {
+		try await withCheckedThrowingContinuation { continuation in
+			server.mustAbortAuthorization = false
+			server.authorize(with: self.authProperties) { patient, error in
+				if let err = error {
+					continuation.resume(throwing: err)
+				}
+				else {
+					continuation.resume(returning: patient)
+				}
+			}
+		}
+	}
+	
 	/// Will return true while the client is waiting for the authorization callback.
 	open var awaitingAuthCallback: Bool {
 		get { return nil != server.auth?.authCallback }

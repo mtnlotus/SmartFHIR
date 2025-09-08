@@ -23,7 +23,7 @@ instance or validating/executing operations.
 A server manages its own NSURLSession, either with an optional delegate provided via `sessionDelegate` or simply the system shared
 session. Subclasses can change this behavior by overriding `createDefaultSession` or any of the other request-related methods.
 */
-open class Server: FHIROpenServer, OAuth2RequestPerformer {
+open class Server: FHIROpenServer, OAuthServer, OAuth2RequestPerformer {
 	
 	/// The service URL as a string, as specified during initalization to be used as `aud` parameter.
 	public final let aud: String
